@@ -1,0 +1,13 @@
+Drop your photo files in this folder (assets/gallery/).
+
+Suggested filenames (matching the placeholders in gallery.html):
+  lab-01.jpg, lab-02.jpg, lab-03.jpg, lab-04.jpg
+  field-01.jpg, field-02.jpg, field-03.jpg, field-04.jpg
+  intl-01.jpg, intl-02.jpg, intl-03.jpg
+  award-01.jpg, award-02.jpg, award-03.jpg
+
+You can rename your photos to match these, or use any name you like —
+just make sure the filename you use here matches the src="assets/gallery/...”
+path you put in gallery.html. See the main README.md for full instructions.
+
+Delete this text file once you've added your own photos.
