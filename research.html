@@ -4,16 +4,372 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Research — Mehedi Hasan</title>
-<link rel="stylesheet" href="style.css">
+<style>
+/* ============================================
+   DESIGN TOKENS (shared with index.html)
+   ============================================ */
+:root {
+  --bg-primary: #faf8f5;
+  --bg-secondary: #f3efe8;
+  --bg-card: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent: #b45309;
+  --accent-light: #d97706;
+  --accent-bg: #fff7ed;
+  --border: #e7e5e4;
+  --border-light: #f5f5f4;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --max-width: 1100px;
+  --font-sans: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "SF Mono", Monaco, "Cascadia Code", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+h1 { font-size: clamp(2.4rem, 5vw, 3.4rem); }
+h2 { font-size: clamp(1.7rem, 3.5vw, 2.2rem); }
+h3 { font-size: clamp(1.15rem, 2vw, 1.35rem); }
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.wrap {
+  width: 90%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section { padding: 5rem 0; }
+.section-alt { background: var(--bg-secondary); }
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 248, 245, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  padding: 1rem 0;
+}
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.brand svg { width: 28px; height: 28px; }
+.nav-links { display: flex; gap: 2.5rem; }
+.nav-links a {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  position: relative;
+  padding: 0.25rem 0;
+  transition: color 0.2s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--text-primary); }
+.nav-links a:hover::after,
+.nav-links a.active::after { width: 100%; }
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero {
+  padding: 5rem 0 3rem;
+  text-align: center;
+}
+.hero .wrap { max-width: 780px; }
+.hero .eyebrow { margin-bottom: 1rem; }
+.hero h1 { margin-bottom: 1.25rem; }
+.hero .lead { margin-bottom: 0; }
+
+/* ============================================
+   TIMELINE
+   ============================================ */
+.timeline-section { padding-top: 2rem; }
+.timeline {
+  position: relative;
+  padding-left: 2.5rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--border-light));
+}
+.timeline-item {
+  position: relative;
+  padding-bottom: 3.5rem;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2.5rem;
+  top: 0.35rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 3px solid var(--accent);
+  transform: translateX(-6px);
+  box-shadow: 0 0 0 4px var(--accent-bg);
+}
+.timeline-date {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-bg);
+  padding: 0.3rem 0.9rem;
+  border-radius: 100px;
+  margin-bottom: 0.75rem;
+  border: 1px solid #fed7aa;
+}
+.timeline-item h3 {
+  margin-bottom: 0.35rem;
+  color: var(--text-primary);
+}
+.timeline-org {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+.timeline-thesis {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent);
+}
+.timeline-item ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.timeline-item ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.timeline-item ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-light);
+}
+
+/* ============================================
+   SKILLS
+   ============================================ */
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+.skill-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 2rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.skill-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+.skill-card h4 {
+  font-size: 1rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-primary);
+}
+.skill-card h4 svg {
+  width: 20px;
+  height: 20px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.tag {
+  display: inline-block;
+  padding: 0.45rem 1rem;
+  border-radius: 100px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: transform 0.15s;
+  cursor: default;
+}
+.tag:hover { transform: scale(1.04); }
+.tag-wet { background: #fef3c7; color: #92400e; }
+.tag-bacteria { background: #fee2e2; color: #991b1b; font-style: italic; }
+.tag-field { background: #dcfce7; color: #166534; }
+.tag-software { background: #dbeafe; color: #1e40af; }
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.site-footer {
+  border-top: 1px solid var(--border-light);
+  padding: 2.5rem 0;
+  text-align: center;
+}
+.site-footer p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.site-footer a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+  .skills-grid { grid-template-columns: 1fr; }
+  .timeline { padding-left: 2rem; }
+  .timeline-item::before {
+    left: -2rem;
+    transform: translateX(-5px);
+  }
+}
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: block; }
+  .section { padding: 3rem 0; }
+  .hero { padding: 3rem 0 2rem; }
+  .timeline { padding-left: 1.5rem; }
+  .timeline-item::before {
+    left: -1.5rem;
+    width: 12px; height: 12px;
+    transform: translateX(-5px);
+  }
+  .skill-card { padding: 1.5rem; }
+}
+</style>
 </head>
 <body>
 
+<!-- NAVIGATION -->
 <nav class="site-nav">
   <div class="wrap">
     <a href="index.html" class="brand">
-      <svg class="dot-ring" viewBox="0 0 16 16" aria-hidden="true">
-        <circle cx="8" cy="8" r="7" fill="none" stroke="#b9860a" stroke-width="1.4"/>
-        <circle cx="8" cy="8" r="2.2" fill="#b9860a"/>
+      <svg width="28" height="28" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="7" fill="none" stroke="#b45309" stroke-width="1.4"/>
+        <circle cx="8" cy="8" r="2.2" fill="#b45309"/>
       </svg>
       Mehedi Hasan
     </a>
@@ -27,54 +383,54 @@
   </div>
 </nav>
 
-<header class="hero" style="padding-bottom: 3rem;">
-  <div class="wrap" style="grid-template-columns: 1fr;">
-    <div>
-      <p class="tagline">Research experience &amp; laboratory skills</p>
-      <h1>Bench to field, and back again</h1>
-      <p class="lede">Five bacterial genera, three field epidemiology studies, and one thesis on carbapenem-resistant <em>Acinetobacter baumannii</em> — all run out of the Population Medicine and AMR Laboratory at Bangladesh Agricultural University.</p>
-    </div>
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap fade-in">
+    <span class="eyebrow">Research Experience &amp; Laboratory Skills</span>
+    <h1>Bench to Field, and Back Again</h1>
+    <p class="lead">Five bacterial genera, three field epidemiology studies, and one thesis on carbapenem-resistant <em>Acinetobacter baumannii</em> — all run out of the Population Medicine and AMR Laboratory at Bangladesh Agricultural University.</p>
   </div>
 </header>
 
-<section class="block">
+<!-- TIMELINE -->
+<section class="section">
   <div class="wrap">
-    <p class="eyebrow">Experience</p>
-    <h2 class="mt-0">Timeline</h2>
+    <span class="eyebrow fade-in">Experience</span>
+    <h2 class="fade-in" style="margin-bottom: 2.5rem;">Career Timeline</h2>
     <div class="timeline">
 
-      <div class="timeline-item">
-        <span class="date">Apr 2024 – Feb 2026</span>
+      <div class="timeline-item fade-in">
+        <span class="timeline-date">Apr 2024 – Feb 2026</span>
         <h3>MS in Medicine — Thesis Research</h3>
-        <span class="org">Department of Medicine, Bangladesh Agricultural University · Supervisor: Prof. Dr. Taohidul Islam</span>
-        <p style="margin-bottom:0.5rem;"><em>Prevalence and antimicrobial resistance pattern of Acinetobacter baumannii from veterinary hospitals and pet animals in Bangladesh.</em></p>
+        <span class="timeline-org">Department of Medicine, Bangladesh Agricultural University · Supervisor: Prof. Dr. Taohidul Islam</span>
+        <p class="timeline-thesis"><em>Prevalence and antimicrobial resistance pattern of Acinetobacter baumannii from veterinary hospitals and pet animals in Bangladesh.</em></p>
         <ul>
           <li>Detected <em>A. baumannii</em> from rectal and oral samples of dogs and cats, plus environmental and waste samples from veterinary hospitals</li>
           <li>Characterised phenotypic and genotypic resistance patterns and traced epidemiologic factors contributing to pathogen persistence</li>
-          <li>Wrote and independently secured the National Science and Technology Fellowship (2025) to fund the project</li>
+          <li>Wrote and independently secured the <strong>National Science and Technology Fellowship (2025)</strong> to fund the project</li>
         </ul>
       </div>
 
-      <div class="timeline-item">
-        <span class="date">Feb 2023 – Present</span>
+      <div class="timeline-item fade-in">
+        <span class="timeline-date">Feb 2023 – Present</span>
         <h3>Research Assistant</h3>
-        <span class="org">Population Medicine and AMR Laboratory, Bangladesh Agricultural University</span>
+        <span class="timeline-org">Population Medicine and AMR Laboratory, Bangladesh Agricultural University</span>
         <ul>
           <li>Microbial detection and molecular confirmation of zoonotic/foodborne pathogens: <em>Salmonella</em> spp., <em>S. aureus</em>, <em>L. monocytogenes</em>, <em>E. coli</em>, <em>Streptococcus</em> spp., <em>Campylobacter</em> spp.</li>
           <li>Antimicrobial susceptibility and resistance-gene profiling to characterise phenotypic and genotypic AMR</li>
           <li>Biofilm-forming capacity assessment via microtiter plate assay</li>
           <li>Phylogenetic reconstruction and amino-acid substitution analysis of <em>E. coli</em> and FMDV (MEGA 12, BioEdit)</li>
-          <li>Designed and ran a cross-sectional epidemiological and economic-impact study on Lumpy Skin Disease across 395 farms in 16 districts — attack rates, mortality rates, farm-level production losses</li>
-          <li>Quantified antimicrobial use (UDD/DDD matrices) across 300 broiler farms</li>
+          <li>Designed and ran a cross-sectional epidemiological and economic-impact study on Lumpy Skin Disease across <strong>395 farms in 16 districts</strong> — attack rates, mortality rates, farm-level production losses</li>
+          <li>Quantified antimicrobial use (UDD/DDD matrices) across <strong>300 broiler farms</strong></li>
           <li>Applied GLM, GLMM, GEE, polynomial regression and Kaplan-Meier survival analysis (SPSS, R) to identify risk factors and disease dynamics</li>
           <li>Mentoring 4 junior MS fellows and research assistants in lab methods, data analysis, and scientific writing</li>
         </ul>
       </div>
 
-      <div class="timeline-item">
-        <span class="date">Apr 2024 – Dec 2025</span>
+      <div class="timeline-item fade-in">
+        <span class="timeline-date">Apr 2024 – Dec 2025</span>
         <h3>Teaching Assistant</h3>
-        <span class="org">Prof. Dr. Taohidul Islam, Bangladesh Agricultural University</span>
+        <span class="timeline-org">Prof. Dr. Taohidul Islam, Bangladesh Agricultural University</span>
         <ul>
           <li>Ran hands-on QGIS practicals for first-semester Master's students, including live spatial-analysis demonstrations</li>
           <li>Helped develop course material — lecture notes, exam questions — and contributed to student evaluation</li>
@@ -82,19 +438,19 @@
         </ul>
       </div>
 
-      <div class="timeline-item">
-        <span class="date">Feb 2023 – Apr 2024</span>
+      <div class="timeline-item fade-in">
+        <span class="timeline-date">Feb 2023 – Apr 2024</span>
         <h3>Undergraduate Research Assistant</h3>
-        <span class="org">Population Medicine and AMR Laboratory, Bangladesh Agricultural University</span>
+        <span class="timeline-org">Population Medicine and AMR Laboratory, Bangladesh Agricultural University</span>
         <ul>
           <li>Foundational wet-lab and field work leading into the current research-assistant role</li>
         </ul>
       </div>
 
-      <div class="timeline-item">
-        <span class="date">Sep 2023 – Jan 2024</span>
+      <div class="timeline-item fade-in">
+        <span class="timeline-date">Sep 2023 – Jan 2024</span>
         <h3>Clinical Internship</h3>
-        <span class="org">Veterinary hospitals &amp; clinics, military and dairy farms, BRAC Bull &amp; Buck Station, Livestock Research Institute, Bangladesh National Zoo, Central Disease Investigation Laboratory</span>
+        <span class="timeline-org">Veterinary hospitals &amp; clinics, military and dairy farms, BRAC Bull &amp; Buck Station, Livestock Research Institute, Bangladesh National Zoo, Central Disease Investigation Laboratory</span>
         <ul>
           <li>Patient handling and restraint across small animals, livestock, poultry, and birds; clinical exams and diagnosis alongside senior clinicians</li>
           <li>Surgical assistance: spaying, neutering, Caesarean section, fracture management, amputation, hernia repair, wound management</li>
@@ -106,78 +462,103 @@
   </div>
 </section>
 
-<section class="block alt">
+<!-- SKILLS -->
+<section class="section section-alt">
   <div class="wrap">
-    <p class="eyebrow">Skills</p>
-    <h2 class="mt-0">Laboratory, field &amp; analytical toolkit</h2>
+    <span class="eyebrow fade-in">Skills</span>
+    <h2 class="fade-in" style="margin-bottom: 2.5rem;">Laboratory, Field &amp; Analytical Toolkit</h2>
 
-    <div class="tag-group">
-      <h4>Wet laboratory</h4>
-      <div class="tags">
-        <span class="tag violet">Bacteriological culture &amp; sub-culture</span>
-        <span class="tag violet">Somatic cell count / TVC</span>
-        <span class="tag violet">Biochemical &amp; morphological ID</span>
-        <span class="tag violet">DNA extraction</span>
-        <span class="tag violet">Uniplex, multiplex &amp; gradient PCR</span>
-        <span class="tag violet">RT-PCR</span>
-        <span class="tag violet">Gel electrophoresis</span>
-        <span class="tag violet">Disc-diffusion &amp; broth microdilution</span>
-        <span class="tag violet">CDT, DDST, mCIM, eCIM, PBA (ESBL/MBL screening)</span>
-        <span class="tag violet">Microtiter plate assay, ELISA, biofilm assessment</span>
+    <div class="skills-grid">
+      <div class="skill-card fade-in">
+        <h4>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 2v7.31"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/></svg>
+          Wet Laboratory
+        </h4>
+        <div class="tags">
+          <span class="tag tag-wet">Bacteriological culture &amp; sub-culture</span>
+          <span class="tag tag-wet">Somatic cell count / TVC</span>
+          <span class="tag tag-wet">Biochemical &amp; morphological ID</span>
+          <span class="tag tag-wet">DNA extraction</span>
+          <span class="tag tag-wet">Uniplex, multiplex &amp; gradient PCR</span>
+          <span class="tag tag-wet">RT-PCR</span>
+          <span class="tag tag-wet">Gel electrophoresis</span>
+          <span class="tag tag-wet">Disc-diffusion &amp; broth microdilution</span>
+          <span class="tag tag-wet">CDT, DDST, mCIM, eCIM, PBA</span>
+          <span class="tag tag-wet">Microtiter plate assay, ELISA, biofilm</span>
+        </div>
       </div>
-    </div>
 
-    <div class="tag-group">
-      <h4>Bacteria worked with</h4>
-      <div class="tags">
-        <span class="tag italic"><em>Acinetobacter baumannii</em></span>
-        <span class="tag italic"><em>Klebsiella pneumoniae</em></span>
-        <span class="tag italic"><em>E. coli</em></span>
-        <span class="tag italic"><em>Salmonella</em> spp.</span>
-        <span class="tag italic"><em>Staphylococcus aureus</em></span>
-        <span class="tag italic"><em>Campylobacter fetus</em></span>
-        <span class="tag italic"><em>Campylobacter coli</em></span>
-        <span class="tag italic"><em>Listeria monocytogenes</em></span>
-        <span class="tag italic"><em>Pseudomonas aeruginosa</em></span>
-        <span class="tag italic"><em>Streptococcus</em> spp.</span>
+      <div class="skill-card fade-in">
+        <h4>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          Bacteria Worked With
+        </h4>
+        <div class="tags">
+          <span class="tag tag-bacteria"><em>Acinetobacter baumannii</em></span>
+          <span class="tag tag-bacteria"><em>Klebsiella pneumoniae</em></span>
+          <span class="tag tag-bacteria"><em>E. coli</em></span>
+          <span class="tag tag-bacteria"><em>Salmonella</em> spp.</span>
+          <span class="tag tag-bacteria"><em>Staphylococcus aureus</em></span>
+          <span class="tag tag-bacteria"><em>Campylobacter fetus</em></span>
+          <span class="tag tag-bacteria"><em>Campylobacter coli</em></span>
+          <span class="tag tag-bacteria"><em>Listeria monocytogenes</em></span>
+          <span class="tag tag-bacteria"><em>Pseudomonas aeruginosa</em></span>
+          <span class="tag tag-bacteria"><em>Streptococcus</em> spp.</span>
+        </div>
       </div>
-    </div>
 
-    <div class="tag-group">
-      <h4>Field skills</h4>
-      <div class="tags">
-        <span class="tag crimson">Sample collection &amp; transportation</span>
-        <span class="tag crimson">Questionnaire design &amp; data collection</span>
-        <span class="tag crimson">Epidemiological investigation (FMD, LSD)</span>
-        <span class="tag crimson">Farmer training</span>
+      <div class="skill-card fade-in">
+        <h4>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19c0-1.7-1.3-3-3-3h-5c-1.7 0-3 1.3-3 3"/><path d="M17.5 19H21v-5.5c0-1.4-1.1-2.5-2.5-2.5S16 12.1 16 13.5V19h1.5z"/><path d="M6.5 19H3v-5.5C3 12.1 4.1 11 5.5 11S8 12.1 8 13.5V19H6.5z"/><path d="M12 11V3"/><path d="M12 3L8.5 6.5"/><path d="M12 3l3.5 3.5"/></svg>
+          Field Skills
+        </h4>
+        <div class="tags">
+          <span class="tag tag-field">Sample collection &amp; transportation</span>
+          <span class="tag tag-field">Questionnaire design &amp; data collection</span>
+          <span class="tag tag-field">Epidemiological investigation (FMD, LSD)</span>
+          <span class="tag tag-field">Farmer training &amp; outreach</span>
+        </div>
       </div>
-    </div>
 
-    <div class="tag-group">
-      <h4>Software &amp; analysis</h4>
-      <div class="tags">
-        <span class="tag gold">R</span>
-        <span class="tag gold">SPSS</span>
-        <span class="tag gold">EpiInfo</span>
-        <span class="tag gold">Excel</span>
-        <span class="tag gold">QGIS / ArcGIS</span>
-        <span class="tag gold">MEGA 12, NCBI, BioEdit</span>
-        <span class="tag gold">KoBoToolbox, Google Forms</span>
-        <span class="tag gold">GLM / GLMM / GEE</span>
-        <span class="tag gold">Kaplan–Meier survival analysis</span>
-        <span class="tag gold">Bayesian statistics (learning)</span>
-        <span class="tag gold">Antibiotic consumption quantification</span>
+      <div class="skill-card fade-in">
+        <h4>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Software &amp; Analysis
+        </h4>
+        <div class="tags">
+          <span class="tag tag-software">R</span>
+          <span class="tag tag-software">SPSS</span>
+          <span class="tag tag-software">EpiInfo</span>
+          <span class="tag tag-software">Excel</span>
+          <span class="tag tag-software">QGIS / ArcGIS</span>
+          <span class="tag tag-software">MEGA 12, NCBI, BioEdit</span>
+          <span class="tag tag-software">KoBoToolbox, Google Forms</span>
+          <span class="tag tag-software">GLM / GLMM / GEE</span>
+          <span class="tag tag-software">Kaplan–Meier survival analysis</span>
+          <span class="tag tag-software">Bayesian statistics (learning)</span>
+          <span class="tag tag-software">Antibiotic consumption quantification</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="site-footer">
   <div class="wrap">
-    <span>© 2026 Mehedi Hasan</span>
-    <span><a href="mailto:mehedi.1801112@bau.edu.bd">mehedi.1801112@bau.edu.bd</a> · Bangladesh Agricultural University</span>
+    <p>© 2026 Mehedi Hasan · Bangladesh Agricultural University · <a href="mailto:mehedi.1801112@bau.edu.bd">mehedi.1801112@bau.edu.bd</a></p>
   </div>
 </footer>
+
+<!-- SCROLL ANIMATIONS -->
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>
