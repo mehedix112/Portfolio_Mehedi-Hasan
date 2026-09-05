@@ -4,16 +4,458 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Publications — Mehedi Hasan</title>
-<link rel="stylesheet" href="style.css">
+<style>
+/* ============================================
+   DESIGN TOKENS
+   ============================================ */
+:root {
+  --bg-primary: #faf8f5;
+  --bg-secondary: #f3efe8;
+  --bg-card: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent: #b45309;
+  --accent-light: #d97706;
+  --accent-bg: #fff7ed;
+  --border: #e7e5e4;
+  --border-light: #f5f5f4;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --max-width: 1100px;
+  --font-sans: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "SF Mono", Monaco, "Cascadia Code", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+h1 { font-size: clamp(2.4rem, 5vw, 3.4rem); }
+h2 { font-size: clamp(1.7rem, 3.5vw, 2.2rem); }
+h3 { font-size: 1.15rem; }
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.wrap {
+  width: 90%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section { padding: 5rem 0; }
+.section-alt { background: var(--bg-secondary); }
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 248, 245, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  padding: 1rem 0;
+}
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.brand svg { width: 28px; height: 28px; }
+.nav-links { display: flex; gap: 2.5rem; }
+.nav-links a {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  position: relative;
+  padding: 0.25rem 0;
+  transition: color 0.2s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--text-primary); }
+.nav-links a:hover::after,
+.nav-links a.active::after { width: 100%; }
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero {
+  padding: 5rem 0 3rem;
+  text-align: center;
+}
+.hero .wrap { max-width: 780px; }
+.hero .eyebrow { margin-bottom: 1rem; }
+.hero h1 { margin-bottom: 1.25rem; }
+.hero .lead { margin-bottom: 0; }
+
+/* ============================================
+   PUBLICATION SUMMARY BAR
+   ============================================ */
+.pub-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 3rem;
+}
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+.summary-card .num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.summary-card .label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ============================================
+   PUBLICATION LISTS
+   ============================================ */
+.pub-section { margin-bottom: 3.5rem; }
+.pub-section:last-child { margin-bottom: 0; }
+
+.pub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.pub-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 1.75rem 2rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.pub-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.pub-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 1.75rem; bottom: 1.75rem;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+}
+.pub-item.published::before { background: #16a34a; }
+.pub-item.review::before { background: var(--accent-light); }
+.pub-item.prep::before { background: var(--border); }
+
+.pub-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+.pub-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.pub-text {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.pub-text strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.pub-text em {
+  font-style: italic;
+  color: var(--text-primary);
+}
+.pub-text .journal {
+  font-style: italic;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.pub-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 100px;
+}
+.status-published { background: #dcfce7; color: #166534; }
+.status-review { background: #fef3c7; color: #92400e; }
+.status-prep { background: #f1f5f9; color: #475569; }
+
+.doi-link {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.2s;
+}
+.doi-link:hover { color: #92400e; text-decoration: underline; }
+.doi-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ============================================
+   CONFERENCE CARDS
+   ============================================ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+.conf-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.conf-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+.conf-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+}
+.conf-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.conf-type svg { width: 16px; height: 16px; }
+.conf-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+.conf-card p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.conf-card p strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ============================================
+   SERVICE TAGS
+   ============================================ */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.service-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  transition: all 0.2s;
+}
+.service-item:hover {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+.service-item svg {
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+.service-item span {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.site-footer {
+  border-top: 1px solid var(--border-light);
+  padding: 2.5rem 0;
+  text-align: center;
+}
+.site-footer p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.site-footer a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+  .pub-summary { grid-template-columns: repeat(2, 1fr); }
+  .card-grid { grid-template-columns: 1fr; }
+  .service-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: block; }
+  .section { padding: 3rem 0; }
+  .hero { padding: 3rem 0 2rem; }
+  .pub-item { padding: 1.25rem 1.5rem; }
+  .pub-summary { gap: 0.75rem; }
+  .summary-card { padding: 1.25rem; }
+}
+</style>
 </head>
 <body>
 
+<!-- NAVIGATION -->
 <nav class="site-nav">
   <div class="wrap">
     <a href="index.html" class="brand">
-      <svg class="dot-ring" viewBox="0 0 16 16" aria-hidden="true">
-        <circle cx="8" cy="8" r="7" fill="none" stroke="#b9860a" stroke-width="1.4"/>
-        <circle cx="8" cy="8" r="2.2" fill="#b9860a"/>
+      <svg width="28" height="28" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="7" fill="none" stroke="#b45309" stroke-width="1.4"/>
+        <circle cx="8" cy="8" r="2.2" fill="#b45309"/>
       </svg>
       Mehedi Hasan
     </a>
@@ -27,127 +469,336 @@
   </div>
 </nav>
 
-<header class="hero" style="padding-bottom: 3rem;">
-  <div class="wrap" style="grid-template-columns: 1fr;">
-    <div>
-      <p class="tagline">Publications &amp; scholarly output</p>
-      <h1>Publications &amp; manuscripts</h1>
-      <p class="lede">— spanning antimicrobial resistance, foodborne pathogens, and field epidemiology of livestock disease.</p>
-    </div>
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap fade-in">
+    <span class="eyebrow">Publications &amp; Scholarly Output</span>
+    <h1>Publications &amp; Manuscripts</h1>
+    <p class="lead">Spanning antimicrobial resistance, foodborne pathogens, and field epidemiology of livestock disease.</p>
   </div>
 </header>
 
-<section class="block">
+<!-- SUMMARY STATS -->
+<section class="section" style="padding-top: 0;">
   <div class="wrap">
-    <p class="eyebrow">Published</p>
-    <h2 class="mt-0">Journal articles</h2>
-    <ul class="pub-list">
-      <li>
-        <span class="p-num">1.</span>Runa, M.A., Tasnuva, S., Rahman, A., Rahman, M.M., <strong>Hasan, M.</strong>, et al. (2026). Occurrence, virulence gene profile, and antimicrobial resistance of <em>Campylobacter</em> spp. in ready-to-eat and processed chicken and fish products in Mymensingh municipality of Bangladesh. <span class="journal">International Journal of Food Science.</span>
-        <div style="margin-top:0.4rem;"><a href="https://doi.org/10.1155/ijfo/9923913" target="_blank" rel="noopener" class="mono" style="font-size:0.82rem;">doi.org/10.1155/ijfo/9923913 ↗</a></div>
-      </li>
-    </ul>
+    <div class="pub-summary fade-in">
+      <div class="summary-card">
+        <span class="num">1</span>
+        <span class="label">Published</span>
+      </div>
+      <div class="summary-card">
+        <span class="num">5</span>
+        <span class="label">Under Review</span>
+      </div>
+      <div class="summary-card">
+        <span class="num">7</span>
+        <span class="label">In Preparation</span>
+      </div>
+      <div class="summary-card">
+        <span class="num">5</span>
+        <span class="label">Conference Presentations</span>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="block alt">
+<!-- PUBLISHED -->
+<section class="section section-alt">
   <div class="wrap">
-    <p class="eyebrow">Under review</p>
-    <h2 class="mt-0">Submitted manuscripts</h2>
-    <ul class="pub-list review">
-      <li>
-        <span class="p-num">1.</span><strong>Hasan, M.</strong>, Lira, S.A., Islam, A., et al. Emergence of Multidrug-Resistant <em>Acinetobacter baumannii</em> in Cats, Veterinary Hospital Environments and Medical Wastes in Bangladesh.
-        <div class="status">Under review · Veterinary Research Communication</div>
-      </li>
-      <li>
-        <span class="p-num">2.</span>Rahman, A., <strong>Hasan, M.</strong>, Khatun, Z., et al. (2026). Epidemiology of recent outbreaks of Foot-and-Mouth Disease in cattle and emergence of SEA/Mya-98 topotype in Bangladesh.
-        <div class="status">Under review · Bulletin of the National Research Center</div>
-      </li>
-      <li>
-        <span class="p-num">3.</span>Jahan, I., <strong>Hasan, M.</strong>, Sharmy, S.T., et al. Economic impact and epidemiology of Lumpy Skin Disease in cattle in Bangladesh.
-        <div class="status">Under review · Preventive Veterinary Medicine</div>
-      </li>
-      <li>
-        <span class="p-num">4.</span>Miti, A.A., <strong>Hasan, M.</strong>, Suchy, S.A., et al. Influence of cow and herd level factors on somatic cell count and total bacterial count in dairy cow milk.
-        <div class="status">Under review · PLOS ONE</div>
-      </li>
-      <li>
-       <span class="p-num">5.</span> Moon, M.M.,<strong>Hasan, M.</strong>, Keya, A.N., et al. Integrated assessment of disease prevention practices and antimicrobial stewardship risk in small-scale broiler farms in Bangladesh
-        <div class="status">Under review · Journal of Applied Poultry Research </div>
-    </ul>
+    <div class="pub-section fade-in">
+      <span class="eyebrow">Published</span>
+      <h2 style="margin-bottom: 1.5rem;">Journal Articles</h2>
+      <div class="pub-list">
+        <div class="pub-item published">
+          <div class="pub-header">
+            <span class="pub-num">1</span>
+            <div class="pub-text">
+              Runa, M.A., Tasnuva, S., Rahman, A., Rahman, M.M., <strong>Hasan, M.</strong>, et al. (2026). Occurrence, virulence gene profile, and antimicrobial resistance of <em>Campylobacter</em> spp. in ready-to-eat and processed chicken and fish products in Mymensingh municipality of Bangladesh. <span class="journal">International Journal of Food Science.</span>
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-published">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Published 2026
+            </span>
+            <a class="doi-link" href="https://doi.org/10.1155/ijfo/9923913" target="_blank" rel="noopener">
+              doi.org/10.1155/ijfo/9923913
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="block">
+<!-- UNDER REVIEW -->
+<section class="section">
   <div class="wrap">
-    <p class="eyebrow">In preparation</p>
-    <h2 class="mt-0">Manuscripts in preparation</h2>
-    <ul class="pub-list prep">
-      <li><span class="p-num">1.</span>Lira, S.A., <strong>Hasan, M.</strong>, Islam, A., et al. Assessment of veterinary waste management practices and detection of antibiotic-resistant <em>Klebsiella pneumoniae</em> in veterinary wastes of Bangladesh.</li>
-      <li><span class="p-num">2.</span>Turna, A.A., Maliha, M., <strong>Hasan, M.</strong>, et al. Isolation and characterization of biofilm-forming <em>Salmonella</em> spp. from poultry drinking water system.</li>
-      <li><span class="p-num">3.</span>Maliha, M., Turna, A.A., <strong>Hasan, M.</strong>, et al. Detection of biofilm-forming methicillin-resistant <em>Staphylococcus aureus</em> in drinking water systems of layer farms.</li>
-      <li><span class="p-num">4.</span>Keya, A.N., Rahman, M.M., <strong>Hasan, M.</strong>, et al. Detection and antimicrobial resistance pattern of <em>Listeria monocytogenes</em> in cattle farms of Mymensingh, Bangladesh.</li>
-      <li><span class="p-num">5.</span>Parvin, M.S., Maliha, M., <strong>Hasan, M.</strong>, et al. Exploring commensal <em>E. coli</em> carrying carbapenem-resistance genes isolated from frozen and retail chicken meat in Bangladesh.</li>
-      <li><span class="p-num">6.</span>Rahman, M.M., <strong>Hasan, M.</strong>, Keya, A.N., Rahman, A., et al. Antimicrobials and alternatives-to-antibiotics consumption quantification: a cross-sectional study in small-scale broiler farms across three districts of Bangladesh.</li>
-      <li><span class="p-num">8.</span>Ali, S.B., Islam, A., Islam, M.M., <strong>Hasan, M.</strong>, et al. Rumen health assessment in dairy cows: influence of cow and farm-level factors.</li>
-    </ul>
+    <div class="pub-section fade-in">
+      <span class="eyebrow">Under Review</span>
+      <h2 style="margin-bottom: 1.5rem;">Submitted Manuscripts</h2>
+      <div class="pub-list">
+        <div class="pub-item review">
+          <div class="pub-header">
+            <span class="pub-num">1</span>
+            <div class="pub-text">
+              <strong>Hasan, M.</strong>, Lira, S.A., Islam, A., et al. Emergence of Multidrug-Resistant <em>Acinetobacter baumannii</em> in Cats, Veterinary Hospital Environments and Medical Wastes in Bangladesh.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-review">Under Review</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Veterinary Research Communication</span>
+          </div>
+        </div>
+
+        <div class="pub-item review">
+          <div class="pub-header">
+            <span class="pub-num">2</span>
+            <div class="pub-text">
+              Rahman, A., <strong>Hasan, M.</strong>, Khatun, Z., et al. (2026). Epidemiology of recent outbreaks of Foot-and-Mouth Disease in cattle and emergence of SEA/Mya-98 topotype in Bangladesh.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-review">Under Review</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Bulletin of the National Research Center</span>
+          </div>
+        </div>
+
+        <div class="pub-item review">
+          <div class="pub-header">
+            <span class="pub-num">3</span>
+            <div class="pub-text">
+              Jahan, I., <strong>Hasan, M.</strong>, Sharmy, S.T., et al. Economic impact and epidemiology of Lumpy Skin Disease in cattle in Bangladesh.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-review">Under Review</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Preventive Veterinary Medicine</span>
+          </div>
+        </div>
+
+        <div class="pub-item review">
+          <div class="pub-header">
+            <span class="pub-num">4</span>
+            <div class="pub-text">
+              Miti, A.A., <strong>Hasan, M.</strong>, Suchy, S.A., et al. Influence of cow and herd level factors on somatic cell count and total bacterial count in dairy cow milk.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-review">Under Review</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">PLOS ONE</span>
+          </div>
+        </div>
+
+        <div class="pub-item review">
+          <div class="pub-header">
+            <span class="pub-num">5</span>
+            <div class="pub-text">
+              Moon, M.M., <strong>Hasan, M.</strong>, Keya, A.N., et al. Integrated assessment of disease prevention practices and antimicrobial stewardship risk in small-scale broiler farms in Bangladesh.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-review">Under Review</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Journal of Applied Poultry Research</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="block alt">
+<!-- IN PREPARATION -->
+<section class="section section-alt">
   <div class="wrap">
-    <p class="eyebrow">Conference proceedings</p>
-    <h2 class="mt-0">Oral &amp; poster presentations</h2>
+    <div class="pub-section fade-in">
+      <span class="eyebrow">In Preparation</span>
+      <h2 style="margin-bottom: 1.5rem;">Manuscripts in Preparation</h2>
+      <div class="pub-list">
+        <div class="pub-item prep">
+          <div class="pub-header">
+            <span class="pub-num">1</span>
+            <div class="pub-text">
+              Lira, S.A., <strong>Hasan, M.</strong>, Islam, A., et al. Assessment of veterinary waste management practices and detection of antibiotic-resistant <em>Klebsiella pneumoniae</em> in veterinary wastes of Bangladesh.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-prep">In Preparation</span>
+          </div>
+        </div>
 
+        <div class="pub-item prep">
+          <div class="pub-header">
+            <span class="pub-num">2</span>
+            <div class="pub-text">
+              Turna, A.A., Maliha, M., <strong>Hasan, M.</strong>, et al. Isolation and characterization of biofilm-forming <em>Salmonella</em> spp. from poultry drinking water system.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-prep">In Preparation</span>
+          </div>
+        </div>
+
+        <div class="pub-item prep">
+          <div class="pub-header">
+            <span class="pub-num">3</span>
+            <div class="pub-text">
+              Maliha, M., Turna, A.A., <strong>Hasan, M.</strong>, et al. Detection of biofilm-forming methicillin-resistant <em>Staphylococcus aureus</em> in drinking water systems of layer farms.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-prep">In Preparation</span>
+          </div>
+        </div>
+
+        <div class="pub-item prep">
+          <div class="pub-header">
+            <span class="pub-num">4</span>
+            <div class="pub-text">
+              Keya, A.N., Rahman, M.M., <strong>Hasan, M.</strong>, et al. Detection and antimicrobial resistance pattern of <em>Listeria monocytogenes</em> in cattle farms of Mymensingh, Bangladesh.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-prep">In Preparation</span>
+          </div>
+        </div>
+
+        <div class="pub-item prep">
+          <div class="pub-header">
+            <span class="pub-num">5</span>
+            <div class="pub-text">
+              Parvin, M.S., Maliha, M., <strong>Hasan, M.</strong>, et al. Exploring commensal <em>E. coli</em> carrying carbapenem-resistance genes isolated from frozen and retail chicken meat in Bangladesh.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-prep">In Preparation</span>
+          </div>
+        </div>
+
+        <div class="pub-item prep">
+          <div class="pub-header">
+            <span class="pub-num">6</span>
+            <div class="pub-text">
+              Rahman, M.M., <strong>Hasan, M.</strong>, Keya, A.N., Rahman, A., et al. Antimicrobials and alternatives-to-antibiotics consumption quantification: a cross-sectional study in small-scale broiler farms across three districts of Bangladesh.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-prep">In Preparation</span>
+          </div>
+        </div>
+
+        <div class="pub-item prep">
+          <div class="pub-header">
+            <span class="pub-num">7</span>
+            <div class="pub-text">
+              Ali, S.B., Islam, A., Islam, M.M., <strong>Hasan, M.</strong>, et al. Rumen health assessment in dairy cows: influence of cow and farm-level factors.
+            </div>
+          </div>
+          <div class="pub-meta">
+            <span class="status-badge status-prep">In Preparation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONFERENCES -->
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow fade-in">Conference Proceedings</span>
+    <h2 class="fade-in" style="margin-bottom: 1.5rem;">Oral &amp; Poster Presentations</h2>
     <div class="card-grid">
-      <div class="card">
-        <h3>Oral</h3>
-        <span class="meta">13th International Poultry Seminar, WAPSA-BB · Feb 2025, Dhaka</span>
+      <div class="conf-card fade-in">
+        <span class="conf-type">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          Oral
+        </span>
+        <div class="conf-meta">13th International Poultry Seminar, WAPSA-BB · Feb 2025, Dhaka</div>
         <p>Turna, A.A., Maliha, M., <strong>Hasan, M.</strong>, et al. — Isolation and characterization of biofilm-forming <em>Salmonella</em> spp. from poultry drinking water system.</p>
       </div>
-      <div class="card">
-        <h3>Oral</h3>
-        <span class="meta">31st BSVER Ascon · Feb 2025</span>
+
+      <div class="conf-card fade-in">
+        <span class="conf-type">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          Oral
+        </span>
+        <div class="conf-meta">31st BSVER Ascon · Feb 2025</div>
         <p>Rahman, M.M., <strong>Hasan, M.</strong>, Keya, A.N., et al. — Assessment of vaccination, biosecurity practices, and the use of alternatives to antibiotics on small-scale broiler farms in three districts of Bangladesh.</p>
       </div>
-      <div class="card">
-        <h3>Oral</h3>
-        <span class="meta">13th International Poultry Seminar, WAPSA-BB · Feb 2025, Dhaka</span>
+
+      <div class="conf-card fade-in">
+        <span class="conf-type">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          Oral
+        </span>
+        <div class="conf-meta">13th International Poultry Seminar, WAPSA-BB · Feb 2025, Dhaka</div>
         <p>Parvin, M.S., Maliha, M., <strong>Hasan, M.</strong>, et al. — Exploring commensal <em>E. coli</em> carrying carbapenem-resistance genes isolated from frozen and retail chicken meat in Bangladesh.</p>
       </div>
-      <div class="card">
-        <h3>Poster</h3>
-        <span class="meta">XXIII World Veterinary Poultry Association Congress · Oct 2025, Sarawak, Malaysia</span>
+
+      <div class="conf-card fade-in">
+        <span class="conf-type">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+          Poster
+        </span>
+        <div class="conf-meta">XXIII World Veterinary Poultry Association Congress · Oct 2025, Sarawak, Malaysia</div>
         <p>Maliha, M., Turna, A.A., <strong>Hasan, M.</strong>, et al. — Detection of biofilm-forming methicillin-resistant <em>Staphylococcus aureus</em> in drinking water systems of layer farms.</p>
       </div>
-      <div class="card">
-        <h3>Poster (accepted, e-poster)</h3>
-        <span class="meta">World Small Animal Veterinary Association Congress · Oct 2026, Warsaw, Poland</span>
+
+      <div class="conf-card fade-in" style="grid-column: 1 / -1;">
+        <span class="conf-type">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          E-Poster (Accepted)
+        </span>
+        <div class="conf-meta">World Small Animal Veterinary Association Congress · Oct 2026, Warsaw, Poland</div>
         <p><strong>Hasan, M.</strong>, Lira, S.A., Islam, A., et al. — First report of carbapenem-resistant <em>Acinetobacter baumannii</em> in small animal hospitals and pet animals in Bangladesh.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="block">
+<!-- ACADEMIC SERVICE -->
+<section class="section section-alt">
   <div class="wrap">
-    <p class="eyebrow">Academic service</p>
-    <h2 class="mt-0">Peer review &amp; teaching</h2>
-    <div class="tags">
-      <span class="tag violet">Ad hoc peer reviewer, Tropical Animal Health and Production (2026)</span>
-      <span class="tag crimson">Member, Bangladesh Veterinary Council</span>
-      <span class="tag gold">QGIS training for first-year MS students</span>
-      <span class="tag gold">Mentoring 4 junior research assistants</span>
+    <span class="eyebrow fade-in">Academic Service</span>
+    <h2 class="fade-in" style="margin-bottom: 1.5rem;">Peer Review &amp; Teaching</h2>
+    <div class="service-grid fade-in">
+      <div class="service-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Ad hoc peer reviewer, <em>Tropical Animal Health and Production</em> (2026)</span>
+      </div>
+      <div class="service-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Member, Bangladesh Veterinary Council</span>
+      </div>
+      <div class="service-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 21 18 21 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        <span>QGIS training for first-year MS students</span>
+      </div>
+      <div class="service-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Mentoring 4 junior research assistants &amp; MS fellows</span>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="site-footer">
   <div class="wrap">
-    <span>© 2026 Mehedi Hasan</span>
-    <span><a href="mailto:mehedi.1801112@bau.edu.bd">mehedi.1801112@bau.edu.bd</a> · Bangladesh Agricultural University</span>
+    <p>© 2026 Mehedi Hasan · Bangladesh Agricultural University · <a href="mailto:mehedi.1801112@bau.edu.bd">mehedi.1801112@bau.edu.bd</a></p>
   </div>
 </footer>
+
+<!-- SCROLL ANIMATIONS -->
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>
