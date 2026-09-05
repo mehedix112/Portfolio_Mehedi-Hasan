@@ -41,39 +41,36 @@
       </div>
     </div>
     <div class="hero-figure">
-  <!-- Signature motif: zone-of-inhibition rings from a disc-diffusion assay,
-       labelled with research interests instead of decorative rings. -->
-  <svg viewBox="0 0 340 340" role="img" aria-labelledby="ringTitle">
-    <title id="ringTitle">Disc-diffusion style diagram of Mehedi's research interests</title>
-
+  <svg viewBox="0 0 340 340" role="img" aria-label="Photo of Mehedi Hasan">
     <defs>
       <clipPath id="discClip">
-        <path transform="translate(145,145) scale(0.5)"
+        <path transform="translate(70,70) scale(2)"
               d="M50,5 C70,5 85,15 88,35 C90,50 85,65 70,72
                  C55,80 35,82 20,70 C8,60 5,45 10,30
                  C15,12 30,5 50,5 Z"/>
       </clipPath>
+      <filter id="blobShadow" x="-40%" y="-40%" width="180%" height="180%">
+        <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000000" flood-opacity="0.35"/>
+      </filter>
     </defs>
 
-    <circle cx="170" cy="170" r="150" fill="none" stroke="#b9860a" stroke-width="1" opacity="0.55"/>
-    <circle cx="170" cy="170" r="115" fill="none" stroke="#b23a48" stroke-width="1" opacity="0.6"/>
-    <circle cx="170" cy="170" r="80" fill="none" stroke="#5a3e85" stroke-width="1.2" opacity="0.75"/>
-
-    <!-- photo, clipped to the blob shape -->
-    <image href="C:\Higher education\files\files\assets\gallery\Mehedi.jpg" x="140" y="140" width="60" height="60"
-           clip-path="url(#discClip)" preserveAspectRatio="xMidYMid slice" />
-
-    <!-- outline on top of the photo, same blob path -->
-    <path transform="translate(145,145) scale(0.5)"
+    <!-- shadow layer: same blob shape, blurred, sitting behind the photo -->
+    <path transform="translate(70,70) scale(2)" filter="url(#blobShadow)"
           d="M50,5 C70,5 85,15 88,35 C90,50 85,65 70,72
              C55,80 35,82 20,70 C8,60 5,45 10,30
              C15,12 30,5 50,5 Z"
-          fill="none" stroke="#1c2321" stroke-width="1.4"/>
+          fill="#000000"/>
 
-    <text x="170" y="24" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="bold" fill="#b9860a">ONE HEALTH</text>
-    <text x="308" y="174" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="bold" fill="#b23a48" transform="rotate(90 308 174)">FIELD EPIDEMIOLOGY</text>
-    <text x="170" y="332" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="bold" fill="#b23a48">ZOONOTIC PATHOGENS</text>
-    <text x="32" y="174" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="bold" fill="#5a3e85" transform="rotate(-90 32 174)">MOLECULAR AMR</text>
+    <!-- photo -->
+    <image href="assets/gallery/Mehedi.jpg" x="70" y="70" width="200" height="200"
+           clip-path="url(#discClip)" preserveAspectRatio="xMidYMid slice" />
+
+    <!-- thin border outline on top -->
+    <path transform="translate(70,70) scale(2)"
+          d="M50,5 C70,5 85,15 88,35 C90,50 85,65 70,72
+             C55,80 35,82 20,70 C8,60 5,45 10,30
+             C15,12 30,5 50,5 Z"
+          fill="none" stroke="#f7f5f0" stroke-width="4"/>
   </svg>
 </div>
   </div>
