@@ -33,7 +33,7 @@
     <div>
       <p class="tagline">DVM · MS in Medicine · Population Medicine &amp; AMR Laboratory, BAU</p>
       <h1>Mehedi Hasan</h1>
-      <p class="lede"> Prospective PhD student/ Veterinarian <br> Research Assistant at Population Medicine and AMR Laboraoty, Dept. of Medicine, Bangladesh Agricultural University </p>
+      <p class="lede"> Prospective PhD student <br> Veterinarian (BVC Reg. NO.: 10722) <br> Research Assistant at Population Medicine and AMR Laboraoty, Dept. of Medicine, Bangladesh Agricultural University </p>
       <div class="btn-row">
         <a class="btn btn-primary" href="mailto:mehedi.1801112@bau.edu.bd">Email me</a>
         <a class="btn btn-ghost" href="research.html">See research →</a>
@@ -41,24 +41,41 @@
       </div>
     </div>
     <div class="hero-figure">
-      <!-- Signature motif: zone-of-inhibition rings from a disc-diffusion assay,
-           labelled with research interests instead of decorative rings. -->
-      <svg viewBox="0 0 340 340" role="img" aria-labelledby="ringTitle">
-        <title id="ringTitle">Disc-diffusion style diagram of Mehedi's research interests</title>
-        <circle cx="170" cy="170" r="150" fill="none" stroke="#b9860a" stroke-width="1" opacity="0.55"/>
-        <circle cx="170" cy="170" r="115" fill="none" stroke="#b23a48" stroke-width="1" opacity="0.6"/>
-        <circle cx="170" cy="170" r="80" fill="none" stroke="#5a3e85" stroke-width="1.2" opacity="0.75"/>
-        <circle cx="170" cy="170" r="26" fill="#f7f5f0" stroke="#c9c3b3" stroke-width="1"/>
-        <circle cx="170" cy="170" r="26" fill="none" stroke="#1c2321" stroke-width="1.4"/>
-        <text x="170" y="166" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1c2321">M.H.</text>
-        <text x="170" y="180" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#4b5259">disc</text>
+  <!-- Signature motif: zone-of-inhibition rings from a disc-diffusion assay,
+       labelled with research interests instead of decorative rings. -->
+  <svg viewBox="0 0 340 340" role="img" aria-labelledby="ringTitle">
+    <title id="ringTitle">Disc-diffusion style diagram of Mehedi's research interests</title>
 
-        <text x="170" y="24" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#b9860a">ONE HEALTH</text>
-        <text x="308" y="174" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#b23a48" transform="rotate(90 308 174)">FIELD EPIDEMIOLOGY</text>
-        <text x="170" y="332" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#b23a48">ZOONOTIC PATHOGENS</text>
-        <text x="32" y="174" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#5a3e85" transform="rotate(-90 32 174)">MOLECULAR AMR</text>
-      </svg>
-    </div>
+    <defs>
+      <clipPath id="discClip">
+        <path transform="translate(145,145) scale(0.5)"
+              d="M50,5 C70,5 85,15 88,35 C90,50 85,65 70,72
+                 C55,80 35,82 20,70 C8,60 5,45 10,30
+                 C15,12 30,5 50,5 Z"/>
+      </clipPath>
+    </defs>
+
+    <circle cx="170" cy="170" r="150" fill="none" stroke="#b9860a" stroke-width="1" opacity="0.55"/>
+    <circle cx="170" cy="170" r="115" fill="none" stroke="#b23a48" stroke-width="1" opacity="0.6"/>
+    <circle cx="170" cy="170" r="80" fill="none" stroke="#5a3e85" stroke-width="1.2" opacity="0.75"/>
+
+    <!-- photo, clipped to the blob shape -->
+    <image href="your-photo.jpg" x="140" y="140" width="60" height="60"
+           clip-path="url(#discClip)" preserveAspectRatio="xMidYMid slice" />
+
+    <!-- outline on top of the photo, same blob path -->
+    <path transform="translate(145,145) scale(0.5)"
+          d="M50,5 C70,5 85,15 88,35 C90,50 85,65 70,72
+             C55,80 35,82 20,70 C8,60 5,45 10,30
+             C15,12 30,5 50,5 Z"
+          fill="none" stroke="#1c2321" stroke-width="1.4"/>
+
+    <text x="170" y="24" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="bold" fill="#b9860a">ONE HEALTH</text>
+    <text x="308" y="174" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="bold" fill="#b23a48" transform="rotate(90 308 174)">FIELD EPIDEMIOLOGY</text>
+    <text x="170" y="332" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="bold" fill="#b23a48">ZOONOTIC PATHOGENS</text>
+    <text x="32" y="174" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="bold" fill="#5a3e85" transform="rotate(-90 32 174)">MOLECULAR AMR</text>
+  </svg>
+</div>
   </div>
 </header>
 
