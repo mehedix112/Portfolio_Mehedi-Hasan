@@ -4,16 +4,337 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gallery — Mehedi Hasan</title>
-<link rel="stylesheet" href="style.css">
+<meta name="description" content="Lab work, field visits, conferences, and international exchange — the visual story of Mehedi Hasan's research.">
+<style>
+/* ============================================
+   DESIGN TOKENS (matched to index & publications)
+   ============================================ */
+:root {
+  --bg-primary: #faf8f5;
+  --bg-secondary: #f3efe8;
+  --bg-card: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent: #b45309;
+  --accent-light: #d97706;
+  --accent-bg: #fff7ed;
+  --border: #e7e5e4;
+  --border-light: #f5f5f4;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --max-width: 1100px;
+  --font-sans: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "SF Mono", Monaco, "Cascadia Code", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+h1 { font-size: clamp(2.4rem, 5vw, 3.4rem); }
+h2 { font-size: clamp(1.7rem, 3.5vw, 2.2rem); }
+h3 { font-size: 1.15rem; }
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.wrap {
+  width: 90%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section { padding: 5rem 0; }
+.section-alt { background: var(--bg-secondary); }
+
+/* ============================================
+   NAVIGATION (exact copy from index)
+   ============================================ */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 248, 245, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  padding: 1rem 0;
+}
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.brand svg { width: 28px; height: 28px; }
+.nav-links { display: flex; gap: 2.5rem; }
+.nav-links a {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  position: relative;
+  padding: 0.25rem 0;
+  transition: color 0.2s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--text-primary); }
+.nav-links a:hover::after,
+.nav-links a.active::after { width: 100%; }
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero {
+  padding: 5rem 0 3rem;
+  text-align: center;
+}
+.hero .wrap { max-width: 780px; }
+.hero .eyebrow { margin-bottom: 1rem; }
+.hero h1 { margin-bottom: 1.25rem; }
+.hero .lead { margin-bottom: 0; }
+
+/* ============================================
+   GALLERY GRID
+   ============================================ */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.gallery-item {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-secondary);
+  aspect-ratio: 4 / 3;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.gallery-item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.gallery-item:hover img {
+  transform: scale(1.06);
+}
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(30, 41, 59, 0.85) 0%, rgba(30, 41, 59, 0) 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+.gallery-overlay h4 {
+  color: white;
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+.gallery-overlay p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* ============================================
+   LIGHTBOX
+   ============================================ */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(250, 248, 245, 0.96);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.lightbox.active {
+  display: flex;
+}
+.lightbox-img {
+  max-width: 90%;
+  max-height: 82vh;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+}
+.lightbox-close {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+.lightbox-close:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.lightbox-caption {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px;
+  box-shadow: var(--shadow);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================
+   FOOTER (exact copy from index)
+   ============================================ */
+.site-footer {
+  border-top: 1px solid var(--border-light);
+  padding: 2.5rem 0;
+  text-align: center;
+}
+.site-footer p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.site-footer a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: block; }
+  .section { padding: 3rem 0; }
+  .hero { padding: 3rem 0 2rem; }
+  .gallery-grid { grid-template-columns: 1fr; }
+  .lightbox-caption { max-width: 90%; white-space: normal; border-radius: var(--radius-sm); }
+}
+</style>
 </head>
 <body>
 
+<!-- NAVIGATION -->
 <nav class="site-nav">
   <div class="wrap">
     <a href="index.html" class="brand">
-      <svg class="dot-ring" viewBox="0 0 16 16" aria-hidden="true">
-        <circle cx="8" cy="8" r="7" fill="none" stroke="#b9860a" stroke-width="1.4"/>
-        <circle cx="8" cy="8" r="2.2" fill="#b9860a"/>
+      <svg width="28" height="28" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="7" fill="none" stroke="#b45309" stroke-width="1.4"/>
+        <circle cx="8" cy="8" r="2.2" fill="#b45309"/>
       </svg>
       Mehedi Hasan
     </a>
@@ -27,177 +348,240 @@
   </div>
 </nav>
 
-<header class="hero" style="padding-bottom: 3rem;">
-  <div class="wrap" style="grid-template-columns: 1fr;">
-    <div>
-      <p class="tagline">Photo gallery</p>
-      <h1>Lab, field &amp; conference life</h1>
-      <p class="lede">This page is set up and ready — drop your own photos into <code class="mono">assets/gallery/</code> and swap them in below. See the note at the bottom of each section for the exact filename to use.</p>
-    </div>
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap fade-in">
+    <span class="eyebrow">Beyond the Papers</span>
+    <h1>Lab, Field &amp; Conference Life</h1>
+    <p class="lead">Photos from bench work, farm visits across Bangladesh, the Sakura Science Exchange in Japan, and conference presentations.</p>
   </div>
 </header>
 
-<section class="block">
+<!-- LAB ACTIVITIES -->
+<section class="section">
   <div class="wrap">
-
-    <!-- ============ LAB ACTIVITIES ============ -->
-    <div class="gallery-category lab">
-      <h3><span class="swatch"></span> Lab activities</h3>
-      <div class="carousel">
-        <button class="carousel-btn prev" aria-label="Previous photo">‹</button>
-        <div class="carousel-track-wrap">
-          <div class="carousel-track">
-
-            <div class="carousel-slide">
-				<img src="assets/gallery/IMG-20251002-WA0106.jpg" alt=" Working at the Laboratory">
-				<p class="slide-caption">Working at the Laboratory</p>
-				</div>
-
-            <div class="carousel-slide">
-     <img src="assets/gallery/IMG-20251002-WA0058.jpg" alt="Acinetobacter baumannii in Leeds Acinetobacter Media">
-     <p class="slide-caption">Acinetobacter baumannii in Leeds Acinetobacter Media</p>
-   </div>
-
-            <div class="carousel-slide">
-     <img src="assets/gallery/Lab photo 3.jpeg" alt="Working at the Laboratory">
-     <p class="slide-caption"> Working at the laboratory</p>
-   </div>
-
-            <div class="carousel-slide">
-     <img src="assets/gallery/E.coli culture.jpeg" alt="E.coli in EMB agar">
-     <p class="slide-caption"> E.coli in EMB agar</p>
-   </div>
-   <div class="carousel-slide">
-     <img src="assets/gallery/Assessment of Biofilm.jpeg" alt="Assessment of Biofilm">
-     <p class="slide-caption"> Assessment of Biofilm</p>
-   </div>
-   <div class="carousel-slide">
-     <img src="assets/gallery/Preseneting a poster.jpeg" alt="Preseneting a poster">
-     <p class="slide-caption"> Preseneting a poster</p>
-   </div>
-   <div class="carousel-slide">
-     <img src="assets/gallery/PMAMR Lab.jpeg" alt="Population Medicine and AMR Laboratory">
-     <p class="slide-caption"> Population Medicine and AMR Laboratory</p> 
-   </div>
-
-          </div>
+    <span class="eyebrow fade-in">Bench Work</span>
+    <h2 class="fade-in" style="margin-bottom: 1.5rem;">Lab Activities</h2>
+    <div class="gallery-grid fade-in">
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/IMG-20251002-WA0106.jpg" alt="Working at the Laboratory">
+        <div class="gallery-overlay">
+          <h4>Laboratory Work</h4>
+          <p>Working at the Population Medicine &amp; AMR Laboratory</p>
         </div>
-        <button class="carousel-btn next" aria-label="Next photo">›</button>
       </div>
-      <div class="carousel-dots"></div>
-    </div>
-
-    <!-- ============ FIELD & SOCIAL ============ -->
-    <div class="gallery-category social">
-      <h3><span class="swatch"></span> Field &amp; social activities</h3>
-      <div class="carousel">
-        <button class="carousel-btn prev" aria-label="Previous photo">‹</button>
-        <div class="carousel-track-wrap">
-          <div class="carousel-track">
-
-            <div class="carousel-slide">
-     <img src="assets/gallery/Field 1.jpeg" alt="Milk Collection preparation">
-     <p class="slide-caption"> Milk Collection preparation</p> 
-   </div>
-
-            <div class="carousel-slide">
-     <img src="assets/gallery/Interviewing farmer.jpeg" alt="Interviewing farmer">
-     <p class="slide-caption"> Interviewing farmer</p> 
-   </div>  
-    <div class="carousel-slide">
-     <img src="assets/gallery/Public event.JPG" alt="Public event">
-     <p class="slide-caption"> Speaking at a public event</p> 
-   </div>  
-<div class="carousel-slide">
-     <img src="assets/gallery/Vaccination campaign.jpeg" alt="Vaccination campaign">
-     <p class="slide-caption"> Vaccination campaign</p> 
-   </div> 
-           
-
-            
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/IMG-20251002-WA0058.jpg" alt="Acinetobacter baumannii in Leeds Acinetobacter Media">
+        <div class="gallery-overlay">
+          <h4>Culture Media</h4>
+          <p>Acinetobacter baumannii in Leeds Acinetobacter Media</p>
         </div>
-        </div>
-        <button class="carousel-btn next" aria-label="Next photo">›</button>
       </div>
-      <div class="carousel-dots"></div>
-    </div>
-
-    <!-- ============ INTERNATIONAL ============ -->
-    <div class="gallery-category intl">
-      <h3><span class="swatch"></span> International exposure</h3>
-      <div class="carousel">
-        <button class="carousel-btn prev" aria-label="Previous photo">‹</button>
-        <div class="carousel-track-wrap">
-          <div class="carousel-track">
-
-            <div class="carousel-slide">
-     <img src="assets/gallery/Completion of the Programme.jpeg" alt="Completion of the Programme">
-     <p class="slide-caption">Completion of the  Sakura Science Exchange progamme</p>
-   </div> 
-
-            <div class="carousel-slide">
-     <img src="assets/gallery/Completion of the progamme.jpeg" alt="Completion of the progamme">
-     <p class="slide-caption">Completion of the  Sakura Science Exchange progamme</p>
-   </div>
-
-            <div class="carousel-slide">
-     <img src="assets/gallery/Sakura Science Exchange fellows at Shimane.jpeg" alt="Sakura Science Exchange fellows at Shimane">
-     <p class="slide-caption">Sakura Science Exchange fellows at Shimane</p>
-   </div>	
-			<div class="carousel-slide">
-     <img src="assets/gallery/Advanced Microscopic Technique.jpeg" alt="Advanced Microscopic Technique">
-     <p class="slide-caption">Advanced Microscopic Technique</p>
-   </div> 
-   
-			<div class="carousel-slide">
-     <img src="assets/gallery/Presenting at shimane University.jpeg" alt="Presenting at shimane University">
-     <p class="slide-caption">Presenting at shimane University</p>
-   </div> 
-
-
-          </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Lab photo 3.jpeg" alt="Working at the Laboratory">
+        <div class="gallery-overlay">
+          <h4>Lab Operations</h4>
+          <p>Working at the laboratory</p>
         </div>
-        <button class="carousel-btn next" aria-label="Next photo">›</button>
       </div>
-      <div class="carousel-dots"></div>
-    </div>
-
-    <!-- ============ ACHIEVEMENTS ============ -->
-    <div class="gallery-category achieve">
-      <h3><span class="swatch"></span> Achievements &amp; awards</h3>
-      <div class="carousel">
-        <button class="carousel-btn prev" aria-label="Previous photo">‹</button>
-        <div class="carousel-track-wrap">
-          <div class="carousel-track">
-				
-				<div class="carousel-slide">
-     <img src="assets/gallery/Champion.JPG" alt="Champion 1">
-     <p class="slide-caption">Champion in a business idea competition</p>
-   </div> 
-			<div class="carousel-slide">
-     <img src="assets/gallery/Champion 2.JPG" alt="Champion 2">
-     <p class="slide-caption">Champion in a business idea competition</p>
-   </div> 
-			<div class="carousel-slide">
-     <img src="assets/gallery/Champion 3.JPG" alt="Champion 3">
-     <p class="slide-caption">Champion in a business idea competition</p>
-   </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/E.coli culture.jpeg" alt="E.coli in EMB agar">
+        <div class="gallery-overlay">
+          <h4>Bacterial Culture</h4>
+          <p>E. coli in EMB agar</p>
         </div>
-        <button class="carousel-btn next" aria-label="Next photo">›</button>
       </div>
-      <div class="carousel-dots"></div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Assessment of Biofilm.jpeg" alt="Assessment of Biofilm">
+        <div class="gallery-overlay">
+          <h4>Biofilm Assay</h4>
+          <p>Assessment of Biofilm formation</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Preseneting a poster.jpeg" alt="Presenting a poster">
+        <div class="gallery-overlay">
+          <h4>Poster Presentation</h4>
+          <p>Presenting research findings</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/PMAMR Lab.jpeg" alt="Population Medicine and AMR Laboratory">
+        <div class="gallery-overlay">
+          <h4>PM &amp; AMR Lab</h4>
+          <p>Population Medicine and AMR Laboratory</p>
+        </div>
+      </div>
     </div>
-
   </div>
 </section>
 
+<!-- FIELD & SOCIAL -->
+<section class="section section-alt">
+  <div class="wrap">
+    <span class="eyebrow fade-in">On the Ground</span>
+    <h2 class="fade-in" style="margin-bottom: 1.5rem;">Field &amp; Social Activities</h2>
+    <div class="gallery-grid fade-in">
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Field 1.jpeg" alt="Milk Collection preparation">
+        <div class="gallery-overlay">
+          <h4>Sample Collection</h4>
+          <p>Milk collection preparation in the field</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Interviewing farmer.jpeg" alt="Interviewing farmer">
+        <div class="gallery-overlay">
+          <h4>Farmer Interview</h4>
+          <p>Collecting data from dairy farmers</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Public event.JPG" alt="Public event">
+        <div class="gallery-overlay">
+          <h4>Public Outreach</h4>
+          <p>Speaking at a public event</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Vaccination campaign.jpeg" alt="Vaccination campaign">
+        <div class="gallery-overlay">
+          <h4>Vaccination Drive</h4>
+          <p>Livestock vaccination campaign</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERNATIONAL -->
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow fade-in">Global Exposure</span>
+    <h2 class="fade-in" style="margin-bottom: 1.5rem;">International Exchange</h2>
+    <div class="gallery-grid fade-in">
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Completion of the Programme.jpeg" alt="Completion of the Programme">
+        <div class="gallery-overlay">
+          <h4>Sakura Science</h4>
+          <p>Completion of the Sakura Science Exchange programme</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Completion of the progamme.jpeg" alt="Completion of the programme">
+        <div class="gallery-overlay">
+          <h4>Programme Completion</h4>
+          <p>Completion of the Sakura Science Exchange programme</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Sakura Science Exchange fellows at Shimane.jpeg" alt="Sakura Science Exchange fellows at Shimane">
+        <div class="gallery-overlay">
+          <h4>Shimane University</h4>
+          <p>Sakura Science Exchange fellows at Shimane</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Advanced Microscopic Technique.jpeg" alt="Advanced Microscopic Technique">
+        <div class="gallery-overlay">
+          <h4>Advanced Microscopy</h4>
+          <p>Advanced microscopic technique training</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Presenting at shimane University.jpeg" alt="Presenting at Shimane University">
+        <div class="gallery-overlay">
+          <h4>Research Talk</h4>
+          <p>Presenting at Shimane University</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section class="section section-alt">
+  <div class="wrap">
+    <span class="eyebrow fade-in">Recognition</span>
+    <h2 class="fade-in" style="margin-bottom: 1.5rem;">Achievements &amp; Awards</h2>
+    <div class="gallery-grid fade-in">
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Champion.JPG" alt="Champion in a business idea competition">
+        <div class="gallery-overlay">
+          <h4>Business Competition</h4>
+          <p>Champion in a business idea competition</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Champion 2.JPG" alt="Champion in a business idea competition">
+        <div class="gallery-overlay">
+          <h4>Competition Winner</h4>
+          <p>Champion in a business idea competition</p>
+        </div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="assets/gallery/Champion 3.JPG" alt="Champion in a business idea competition">
+        <div class="gallery-overlay">
+          <h4>Award Ceremony</h4>
+          <p>Champion in a business idea competition</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="event.stopPropagation(); closeLightbox()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <img src="" alt="" class="lightbox-img" id="lightboxImg" onclick="event.stopPropagation()">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<!-- FOOTER -->
 <footer class="site-footer">
   <div class="wrap">
-    <span>© 2026 Mehedi Hasan</span>
-    <span><a href="mailto:mehedi.1801112@bau.edu.bd">mehedi.1801112@bau.edu.bd</a> · Bangladesh Agricultural University</span>
+    <p>© 2026 Mehedi Hasan · Bangladesh Agricultural University · <a href="mailto:mehedi.1801112@bau.edu.bd">mehedi.1801112@bau.edu.bd</a></p>
   </div>
 </footer>
 
-<script src="gallery.js"></script>
+<!-- SCRIPTS -->
+<script>
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Lightbox
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+
+function openLightbox(item) {
+  const img = item.querySelector('img');
+  const title = item.querySelector('h4').textContent;
+  const desc = item.querySelector('p').textContent;
+  
+  lightboxImg.src = img.src;
+  lightboxImg.alt = img.alt;
+  lightboxCaption.textContent = title + ' — ' + desc;
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+
 </body>
 </html>
